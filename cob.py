@@ -2,18 +2,26 @@ import random
 import itertools
 from stat import FILE_ATTRIBUTE_NO_SCRUB_DATA
 
-CARD_ORDER = '1234567890JQKA'
-SUITS = 'DCHS'
+RANK_ORDER = '1234567890JQKA'
+SUIT_ORDER = 'DCHS'
+POKER_ORDER = ['straight', 'flush', 'full house', 'four of a kind', 'straight flush']
+RANK_ARRAY = list(RANK_ORDER)
+SUIT_ARRAY = list(SUIT_ORDER)
 
 def sort_cards(cards):
     sorted_hand = sorted(cards, key=Card_Key)
     return sorted_hand
 
-
 def Card_Key(card):
-    rank_score = CARD_ORDER.index(card[0])
-    suit_score = SUITS.index(card[1])
+    rank_score = RANK_ARRAY.index(card[0])
+    suit_score = SUIT_ARRAY.index(card[1])
     return rank_score, suit_score
+
+def is_pair(card1, card2):
+    if RANK_ARRAY.index(card1[0]) == RANK_ARRAY.index(card2[0]):
+        return True
+    else:
+        return False
 
 def get_pairs(cards):
     cards = sort_cards(cards)
@@ -22,6 +30,13 @@ def get_pairs(cards):
         if CARD_ORDER.index(cards[i][0]) == CARD_ORDER.index(cards[i + 1][0]):
             pairs.append([cards[i], cards[i+1]])
     return pairs
+
+def is_three(card1, card2, card3):
+    if RANK_ARRAY.index(card1[0]) == RANK_ARRAY.index(card2[0]) and RANK_ARRAY.index(card1[0]) == RANK_ARRAY.index(
+            card3[0]):
+        return True
+    else:
+        return False
 
 def get_threes(cards):
     cards = sort_cards(cards)
@@ -39,6 +54,93 @@ def get_fours(cards):
             fours.append([cards[i], cards[i+1], cards[i+2], cards[i+3]])
     return fours     
 
+def is_a_full_house(cards):
+    cards_list = sort_cards(cards)
+    if is_pair(cards_list[0], cards_list[1]) and is_three(cards_list[2], cards_list[3], cards_list[4]):
+        return True
+    elif is_three(cards_list[0], cards_list[1], cards_list[2]) and is_pair(cards_list[3], cards_list[4]):
+        return True
+    else:
+        return False
+
+def all_full_houses(hand):
+    house_list = []
+    for item in itertools.combinations(hand, 5):
+        # print(item)
+        if is_a_full_house(item):
+            house_list.append([item[0], item[1], item[2], item[3], item[4]])
+    return house_list
+
+def is_straight(play):
+    cards = sort_cards(play)
+    i = 0
+    for x in range(len(cards) - 1):
+        if RANK_ARRAY.index(cards[x + 1][0]) == RANK_ARRAY.index(cards[x][0]) + 1:
+            i = i + 1
+    if i == 4:
+        return True
+    else:
+        return False
+
+def is_flush(cards):
+    i = 0
+    for x in range(len(cards)):
+        if SUIT_ARRAY.index(cards[0][1]) == SUIT_ARRAY.index(cards[x][1]):
+            i = i + 1
+    if i == 5:
+        return True
+    else:
+        return False
+
+def all_straights(hand):
+    straights_list = []
+    for item in itertools.combinations(hand, 5):
+        # print(item)
+        if is_straight(item):
+            straights_list.append([item[0], item[1], item[2], item[3], item[4]])
+    return straights_list
+
+def all_flush(hand):
+    flush_list = []
+    for item in itertools.combinations(hand, 5):
+        # print(item)
+        if is_flush(item):
+            flush_list.append([item[0], item[1], item[2], item[3], item[4]])
+    return flush_list
+
+def all_straight_flush(hand):
+    straight_flush_list = []
+    for item in itertools.combinations(hand, 5):
+        # print(item)
+        if is_straight_flush(item):
+            straight_flush_list.append([item[0], item[1], item[2], item[3], item[4]])
+    return straight_flush_list
+
+def is_straight_flush(cards):
+    if is_straight(cards):
+        if is_flush(cards):
+            return True
+        else:
+            return False
+    else:
+        return False
+
+def get_fives(hand):
+    straights = all_straights(hand)
+    flushs = all_flush(hand)
+    full_houses = all_full_houses(hand)
+    straight_flushs = all_straight_flush(hand)
+    fives = []
+    for x in straights:
+        fives.append(x)
+    for x in flushs:
+        fives.append(x)
+    for x in full_houses:
+        fives.append(x)
+    for x in straight_flushs:
+        fives.append(x)
+    return fives
+
 def play(player, flop, current_bet, players_still_in):
 
     hand = player['hand'] + flop
@@ -52,5 +154,5 @@ def play(player, flop, current_bet, players_still_in):
 # for fold, return 'fold'
 # for stay, return 'stay'
 # for raise, return 'raise {amount}' e.g 'raise 10'
+# for call, return 'call'
 
-print(get_threes(['3D', 'AC', 'KD', '3H', 'AH', '4D', '4C', '4H', 'KH', 'KC', '3C', '3S']))
