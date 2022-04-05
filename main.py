@@ -28,7 +28,7 @@ for i in range(1,number_of_players+1):
     name = 'Player ' + str(i)
     hand = []
     funds = 50
-    players.append({'name': name, 'hand': hand, 'funds': funds, 'still_in': True, 'previous_play': ''})
+    players.append({'name': name, 'hand': hand, 'funds': funds, 'current_bet': 10, 'still_in': True, 'previous_play': ''})
 
 deal_cards(DECK, players)
 
@@ -55,11 +55,16 @@ while len(flop) < 5:
     elif player1_play == 'stay':
         players[0]['still_in'] = False
         players[0]['previous_play'] = player1_play
+    elif player1_play == 'call':
+        players[0]['previous_play'] = player1_play
+        players[0]['current_bet'] += (current_bet - players[0]['current_bet'])
+        players[0]['funds'] -= (current_bet - players[0]['current_bet'])
     else:
         player1_play = player1_play.split(' ')
         if player1_play[0] == 'raise':
             current_bet += int(player1_play[1])
             players[0]['previous_play'] = player1_play
+            players[0]['current_bet'] += int(player1_play[1])
             players[0]['funds'] -= int(player1_play[1])
     print('The current bet is now:',current_bet,'\n')
     
@@ -76,6 +81,7 @@ while len(flop) < 5:
         if player2_play[0] == 'raise':
             current_bet += int(player2_play[1])
             players[1]['previous_play'] = player2_play
+            players[1]['current_bet'] += int(player2_play[1])
             players[1]['funds'] -= int(player2_play[1])
 
     flop.append(DECK[i])
@@ -84,6 +90,9 @@ while len(flop) < 5:
 for player in players:
     if player['still_in'] == True:
         print('\n' + player['name'], 'has won the hand!\n')
+
+print(players)
+print(flop)
 
         
 

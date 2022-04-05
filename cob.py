@@ -27,7 +27,7 @@ def get_pairs(cards):
     cards = sort_cards(cards)
     pairs = []
     for i in range(len((cards)) - 1):
-        if CARD_ORDER.index(cards[i][0]) == CARD_ORDER.index(cards[i + 1][0]):
+        if RANK_ARRAY.index(cards[i][0]) == RANK_ARRAY.index(cards[i + 1][0]):
             pairs.append([cards[i], cards[i+1]])
     return pairs
 
@@ -42,7 +42,7 @@ def get_threes(cards):
     cards = sort_cards(cards)
     threes = []
     for i in range(len((cards)) - 2):
-        if CARD_ORDER.index(cards[i][0]) == CARD_ORDER.index(cards[i+1][0]) and CARD_ORDER.index(cards[i][0]) == CARD_ORDER.index(cards[i+2][0]):
+        if RANK_ARRAY.index(cards[i][0]) == RANK_ARRAY.index(cards[i+1][0]) and RANK_ARRAY.index(cards[i][0]) == RANK_ARRAY.index(cards[i+2][0]):
             threes.append([cards[i], cards[i+1], cards[i+2]])
     return threes    
 
@@ -50,7 +50,7 @@ def get_fours(cards):
     cards = sort_cards(cards)
     fours = []
     for i in range(len((cards)) - 3):
-        if CARD_ORDER.index(cards[i][0]) == CARD_ORDER.index(cards[i+1][0]) and CARD_ORDER.index(cards[i][0]) == CARD_ORDER.index(cards[i+2][0]) and CARD_ORDER.index(cards[i][0]) == CARD_ORDER.index(cards[i+3][0]):
+        if RANK_ARRAY.index(cards[i][0]) == RANK_ARRAY.index(cards[i+1][0]) and RANK_ARRAY.index(cards[i][0]) == RANK_ARRAY.index(cards[i+2][0]) and RANK_ARRAY.index(cards[i][0]) == RANK_ARRAY.index(cards[i+3][0]):
             fours.append([cards[i], cards[i+1], cards[i+2], cards[i+3]])
     return fours     
 
@@ -141,6 +141,55 @@ def get_fives(hand):
         fives.append(x)
     return fives
 
+def best_play(cards):
+    fives = get_fives(cards)
+    fours = get_fours(cards)
+    threes = get_threes(cards)
+    pairs = get_pairs(cards)
+    if fives:
+        return get_play_type(fives[-1])
+    elif fours:
+        return get_play_type(fours[-1])
+    elif threes:
+        return get_play_type(threes[-1])
+    elif pairs:
+        return get_play_type(pairs[-1])   
+    else:
+        return 'high card'
+    
+def get_play_type(play):
+    if len(play) == 1:
+        return 'single'
+    elif len(play) == 2:
+        return 'pair'
+    elif len(play) == 3:
+        return 'triple'
+    elif len(play) == 5:
+        i = 0
+        for x in range(len(play) - 1):
+            if RANK_ARRAY.index(play[x + 1][0]) == RANK_ARRAY.index(play[x][0]) + 1:
+                i = i + 1
+        suit = play[0][1]
+        x = 0
+        for card in play:
+            if card[1] == suit:
+                x = x + 1
+        if i == 4 and x == 5:
+            return 'straight flush'
+        elif i == 4:
+            return 'straight'
+        elif x == 5:
+            return 'flush'
+        else:
+            if is_pair(play[0], play[1]) and is_three(play[2], play[3], play[4]):
+                return 'full house'
+            elif is_three(play[0], play[1], play[2]) and is_pair(play[3], play[4]):
+                return 'full house'
+            else:
+                if is_four_kind(play):
+                    return 'four of a kind'
+
+
 def play(player, flop, current_bet, players_still_in):
 
     hand = player['hand'] + flop
@@ -148,11 +197,13 @@ def play(player, flop, current_bet, players_still_in):
     if current_bet > player['funds']:
         return 'fold'
     else:
-        return 'raise 10'
+        if best_play(hand) in POKER_ORDER:
+            return 'raise ' + str(round(player['funds'] / 2))
+        else:
+            return 'call'
     
 # return formatting:
 # for fold, return 'fold'
-# for stay, return 'stay'
 # for raise, return 'raise {amount}' e.g 'raise 10'
 # for call, return 'call'
 
