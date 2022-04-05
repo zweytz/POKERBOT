@@ -44,48 +44,68 @@ while len(flop) < 5:
     if players_still_in < 2:
         break
 
-    #while players[0]['previous_play'] != 'stay' and players[1]['previous_play'] != 'stay':
 
-    #Player 1 Turn
-    player1_play = cob.play(players[0], flop, current_bet, players)
-    print('Player one returned:', player1_play)
-    if player1_play == 'fold':
-        players[0]['still_in'] = False
-        players[0]['previous_play'] = player1_play
-    elif player1_play == 'stay':
-        players[0]['still_in'] = False
-        players[0]['previous_play'] = player1_play
-    elif player1_play == 'call':
-        players[0]['previous_play'] = player1_play
-        players[0]['current_bet'] += (current_bet - players[0]['current_bet'])
-        players[0]['funds'] -= (current_bet - players[0]['current_bet'])
-    else:
-        player1_play = player1_play.split(' ')
-        if player1_play[0] == 'raise':
-            current_bet += int(player1_play[1])
-            players[0]['previous_play'] = player1_play
-            players[0]['current_bet'] += int(player1_play[1])
-            players[0]['funds'] -= int(player1_play[1])
-    print('The current bet is now:',current_bet,'\n')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
-    #Player 2 Turn
-    player2_play = coon.play(players[1], flop, current_bet, players)
-    print('Player two returned:', player2_play)
-    if player2_play == 'fold':
-        players[1]['still_in'] = False
-        players[1]['previous_play'] = player2_play
-    elif player2_play == 'stay':
-        players[1]['previous_play'] = player2_play
-    else:
-        player2_play = player2_play.split(' ')
-        if player2_play[0] == 'raise':
-            current_bet += int(player2_play[1])
-            players[1]['previous_play'] = player2_play
-            players[1]['current_bet'] += int(player2_play[1])
-            players[1]['funds'] -= int(player2_play[1])
 
-    flop.append(DECK[i])
-    DECK.pop(i)
+    # #while players[0]['previous_play'] != 'stay' and players[1]['previous_play'] != 'stay':
+
+    # #Player 1 Turn
+    # player1_play = cob.play(players[0], flop, current_bet, players)
+    # print('Player one returned:', player1_play)
+    # if player1_play == 'fold':
+    #     players[0]['still_in'] = False
+    #     players[0]['previous_play'] = player1_play
+    # elif player1_play == 'stay':
+    #     players[0]['still_in'] = False
+    #     players[0]['previous_play'] = player1_play
+    # elif player1_play == 'call':
+    #     players[0]['previous_play'] = player1_play
+    #     players[0]['current_bet'] += (current_bet - players[0]['current_bet'])
+    #     players[0]['funds'] -= (current_bet - players[0]['current_bet'])
+    # else:
+    #     player1_play = player1_play.split(' ')
+    #     if player1_play[0] == 'raise':
+    #         current_bet += int(player1_play[1])
+    #         players[0]['previous_play'] = player1_play
+    #         players[0]['current_bet'] += int(player1_play[1])
+    #         players[0]['funds'] -= int(player1_play[1])
+    # print('The current bet is now:',current_bet,'\n')
+    
+    # #Player 2 Turn
+    # player2_play = coon.play(players[1], flop, current_bet, players)
+    # print('Player two returned:', player2_play)
+    # if player2_play == 'fold':
+    #     players[1]['still_in'] = False
+    #     players[1]['previous_play'] = player2_play
+    # elif player2_play == 'stay':
+    #     players[1]['previous_play'] = player2_play
+    # else:
+    #     player2_play = player2_play.split(' ')
+    #     if player2_play[0] == 'raise':
+    #         current_bet += int(player2_play[1])
+    #         players[1]['previous_play'] = player2_play
+    #         players[1]['current_bet'] += int(player2_play[1])
+    #         players[1]['funds'] -= int(player2_play[1])
+
+    # flop.append(DECK[i])
+    # DECK.pop(i)
 
 for player in players:
     if player['still_in'] == True:
