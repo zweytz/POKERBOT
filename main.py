@@ -91,8 +91,5 @@ for player in players:
     if player['still_in'] == True:
         print('\n' + player['name'], 'has won the hand!\n')
 
-print(players)
-print(flop)
-
         
 
